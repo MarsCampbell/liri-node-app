@@ -1,31 +1,34 @@
+
 require("dotenv").config();
 var fs = require("fs");
-//Grab data from keys.js
-var keys = require("./keys.js");
-var request = require("request");
+//Get data from keys.js
 var Spotify = require('node-spotify-api');
 var spotify = new Spotify(keys.spotify);
 var moment = require("moment");
+var keys = require("./keys.js");
+var request = require("request");
 
-//Stored argument's array
+
+//arguments
 var nodeArgv = process.argv;
 var command = process.argv[2];
+
 //movie or song
 var x = "";
 var parameter = "";
 var now = moment().format("MM/DD/YYYY HH:mm:ss:SSS");
 
-
-//attaches multiple word arguments
-for (var i=3; i<nodeArgv.length; i++){
-  if(i>3 && i<nodeArgv.length){
+//allows for multiple words to be passed as arguments 
+for (var i = 3; i < nodeArgv.length; i++){
+  if(i > 3 && i<nodeArgv.length){
     x = x + "+" + nodeArgv[i];
   } else{
     x = x + nodeArgv[i];
   }
 }
 var output = "";
-// switch case
+
+// Setting the string returned from case to var x
 switch(command){
   case "concert-this":
       bandsInTown(x);                   
@@ -35,7 +38,7 @@ switch(command){
     if(x){
       spotifySong(x);
     } else{
-    //   spotifySong("Nevermind");
+    //   spotifySong("Umbrella");
       doThing()
     }
   break;
@@ -44,7 +47,7 @@ switch(command){
     if(x){
       omdbData(x)
     } else{
-      omdbData("Mr. Nobody")
+      omdbData("Constantine")
     }
   break;
 
@@ -102,52 +105,30 @@ function omdbData(movie){
       console.log("Rotten Tomatoes Rating: " + body.Ratings[0].Value);
      
 
-      //adds text to log.txt
+      //appends to log.txt
       fs.appendFile('log.txt', "Title: " + body.Title, (error) =>  {if(error) console.log(error)});
       fs.appendFile('log.txt', "Release Year: " + body.Year,  (error) =>  {if(error) console.log(error)});  
- 
-
-
-
       fs.appendFile('log.txt', "IMdB Rating: " + body.imdbRating,  (error) =>  {if(error) console.log(error)});    
-     
       fs.appendFile('log.txt', "Country: " + body.Country,  (error) =>  {if(error) console.log(error)});      
-   
       fs.appendFile('log.txt', "Language: " + body.Language, (error) =>  {if(error) console.log(error)});     
-     
       fs.appendFile('log.txt', "Plot: " + body.Plot,  (error) =>  {if(error) console.log(error)});  
-    
       fs.appendFile('log.txt', "Actors: " + body.Actors,  (error) =>  {if(error) console.log(error)});     
-     
       fs.appendFile('log.txt', "Rotten Tomatoes Rating: " + body.Ratings[0].Value, (error) =>  {if(error) console.log(error)});         
   
-     
-
     } else{
       console.log('Error occurred.')
     }
-    if(movie === "Mr. Nobody"){
+    if(movie === "Constantine"){
       console.log("-----------------------");
-      console.log("If you haven't watched 'Mr. Nobody,' then you should: http://www.imdb.com/title/tt0485947/");
-      console.log("It's on Netflix!");
+      console.log("Have you seen Constantine,' then you should: http://www.imdb.com/title/tt0485947/");
 
       //adds text to log.txt
       fs.appendFile('log.txt', "-----------------------", (error) =>  {if(error) console.log(error)});
-      fs.appendFile('log.txt', "If you haven't watched 'Mr. Nobody,' then you should: http://www.imdb.com/title/tt0485947/", (error) =>  {if(error) console.log(error)});         
-      fs.appendFile('log.txt', "It's on Netflix!", (error) =>  {if(error) console.log(error)});         
+      fs.appendFile('log.txt', "If you haven't watched 'Constantine,' then you should: http://www.imdb.com/title/tt0485947/", (error) =>  {if(error) console.log(error)});                 
     }
   });
 
 }
-
-function doThing(){
-  fs.readFile('random.txt', "utf8", function(error, data){
-    var txt = data.split(',');
-
-    spotifySong(txt[1]);
-  });
-}
-
 
 
 function bandsInTown(parameter){
@@ -192,3 +173,11 @@ function bandsInTown(parameter){
         });
         console.log(output);
     };
+
+    function doThing(){
+      fs.readFile('random.txt', "utf8", function(error, data){
+        var txt = data.split(',');
+    
+        spotifySong(txt[1]);
+      });
+    }
